@@ -1,0 +1,40 @@
+# BazBeans Configuration File
+# This file is searched for in these locations (in order):
+# 1. $BAZBEANS_CONFIG
+# 2. $HOME/.bazbeans/config.yaml
+# 3. /etc/bazbeans/config.yaml
+# 4. ./bazbeans.yaml
+
+# Redis connection
+redis_url: "redis://localhost:6379/0"
+
+# Default data center (can be overridden with --dc flag)
+data_center: "default"
+
+# Node port (for load balancer configuration)
+node_port: 8000
+
+# Heartbeat settings
+heartbeat_ttl: 30
+heartbeat_interval: 10
+
+# Health check thresholds
+cpu_threshold: 90
+memory_threshold: 85
+
+# Application directory (for docker commands)
+app_dir: "/opt/app"
+compose_file: "docker-compose.yml"
+
+# Pub/sub channel for load balancer events
+pubsub_channel: "bazbeans:lb_events"
+
+# Security settings
+allowed_exec_prefixes:
+  - "docker"
+  - "systemctl"
+  - "ls"
+  - "cat"
+  - "grep"
+  - "ps"
+  - "netstat"

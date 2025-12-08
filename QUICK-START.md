@@ -56,17 +56,8 @@ redis-cli ping
 ## 📦 Step 2: Install BazBeans CLI (1 minute)
 
 ```bash
-# Clone the repository
-git clone https://github.com/yourorg/bazbeans.git
-cd bazbeans
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Install the CLI tool
-cd setup
-./install.sh  # Linux/macOS
-# or .\install.ps1 on Windows
+# Install BazBeans package
+pip install bazbeans
 ```
 
 ## 🤖 Step 3: Run Your First Agent (1 minute)

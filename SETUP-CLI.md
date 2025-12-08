@@ -29,12 +29,8 @@ After completing this guide, you will have:
 ### Step 1: Get BazBeans
 
 ```bash
-# Clone the repository
-git clone https://github.com/yourorg/bazbeans.git
-cd bazbeans
-
-# Install Python dependencies
-pip install -r requirements.txt
+# Install BazBeans package
+pip install bazbeans
 ```
 
 ### Step 2: Install CLI Tool

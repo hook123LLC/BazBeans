@@ -68,8 +68,8 @@ sudo apt install python3-pip
 python3 -m venv /opt/bazbeans
 source /opt/bazbeans/bin/activate
 
-# Install BazBeans dependencies
-pip install -r bazbeans/requirements.txt
+# Install BazBeans package
+pip install bazbeans
 ```
 
 ### Docker (Optional)
@@ -256,8 +256,8 @@ sudo chown $USER:$USER /opt/yourapp
 # Copy your application code
 scp -r ./yourapp user@vm:/opt/yourapp/
 
-# Copy bazbeans
-scp -r ./bazbeans user@vm:/opt/
+# Install BazBeans on the VM
+ssh user@vm "pip install bazbeans"
 ```
 
 ### Step 3: Create Systemd Service

@@ -1,0 +1,22 @@
+# Include documentation and configuration files
+include README.md
+include LICENSE
+include requirements.txt
+include *.md
+include *.yml
+include *.yaml
+include examples/*
+include examples/**/*.py
+include examples/**/*.md
+include setup/*
+include setup/**/*.sh
+include setup/**/*.ps1
+include setup/**/*.yaml
+
+# Include package data
+recursive-include src *.py
+
+# Exclude development files
+exclude .gitignore
+exclude .flake8
+exclude setup.py

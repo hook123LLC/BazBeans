@@ -1,36 +1,49 @@
 # BazBeans Setup Scripts
 
-This directory contains installation scripts to install BazBeans as a native command-line tool on your operating system.
+> **⚠️ Deprecation Notice:** These setup scripts are deprecated. Please use the new Python package installation method instead.
 
-## Quick Installation
+**For the latest installation instructions, see:** [INSTALL-PYTHON-PACKAGE.md](../INSTALL-PYTHON-PACKAGE.md)
 
-### Ubuntu/Linux
+## Quick Installation (Recommended)
+
+### All Platforms
 
 ```bash
-# User installation (recommended)
+# Install BazBeans package
+pip install bazbeans
+```
+
+### Legacy Installation Scripts (Deprecated)
+
+> **Note:** These scripts are no longer maintained. Use `pip install bazbeans` instead.
+
+#### Ubuntu/Linux
+
+```bash
+# User installation (deprecated)
 ./install.sh
 
-# System-wide installation
+# System-wide installation (deprecated)
 sudo ./install.sh --system
 ```
 
-### Windows
+#### Windows
 
 ```powershell
-# User installation (recommended)
+# User installation (deprecated)
 .\install.ps1
 
-# System-wide installation (requires admin)
+# System-wide installation (deprecated)
 .\install.ps1 -System
 ```
 
-### macOS
+#### macOS
 
 ```bash
-# User installation (recommended)
+# User installation (deprecated)
 ./install-macos.sh
 
-# System-wide installation
+# System-wide installation (deprecated)
 sudo ./install-macos.sh --system
 ```
 

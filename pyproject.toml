@@ -1,0 +1,128 @@
+[build-system]
+requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bazbeans"
+version = "0.1.0"
+description = "Generic Multi-Node Control Plane Toolkit"
+readme = "README.md"
+license = {file = "LICENSE"}
+authors = [
+    {name = "hook123 LLC", email = "hello@hook123.com"},
+]
+maintainers = [
+    {name = "hook123 LLC", email = "hello@hook123.com"},
+]
+keywords = [
+    "cluster", "orchestration", "distributed", "nodes", 
+    "load-balancer", "redis", "nginx", "docker", "control-plane"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: System Administrators",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: System :: Systems Administration",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Internet :: Name Service (DNS)",
+    "Topic :: Internet :: WWW/HTTP :: HTTP Servers",
+    "Topic :: Database :: Database Engines/Servers",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "redis>=4.5.0",
+    "click>=8.0.0",
+    "psutil>=5.9.0",
+    "tabulate>=0.9.0",
+]
+
+[project.optional-dependencies]
+docker = ["docker>=6.0.0"]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "black>=22.0",
+    "flake8>=5.0",
+    "mypy>=1.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/hook123LLC/bazbeans"
+Documentation = "https://bazbeans.readthedocs.io/"
+Repository = "https://github.com/hook123LLC/bazbeans.git"
+"Bug Tracker" = "https://github.com/hook123LLC/bazbeans/issues"
+
+[project.scripts]
+bazbeans-cli = "src.control_cli:cli"
+bazbeans-agent = "src.node_agent:NodeAgent"
+bazbeans-updater = "src.nginx_updater:NginxUpdater"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+
+
+# Black formatting configuration
+[tool.black]
+line-length = 88
+target-version = ['py38', 'py39', 'py310', 'py311', 'py312']
+
+# pytest configuration
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "-ra -q --strict-markers"
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+
+# Coverage configuration
+[tool.coverage.run]
+source = ["src"]
+branch = true
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+]
+
+# MyPy configuration
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+
+[[tool.mypy.overrides]]
+module = [
+    "docker.*",
+    "psutil.*",
+    "redis.*",
+    "click.*",
+    "tabulate.*",
+]
+ignore_missing_imports = true

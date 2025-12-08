@@ -85,7 +85,7 @@ cat hook123_agent.py
 ### Prerequisites
 ```bash
 # Install BazBeans
-pip install -r ../bazbeans/requirements.txt
+pip install bazbeans
 
 # Start Redis
 redis-server
@@ -93,12 +93,8 @@ redis-server
 
 ### Basic Setup
 ```bash
-# Clone and setup
-git clone https://github.com/yourorg/bazbeans.git
-cd bazbeans/examples
-
-# Install dependencies
-pip install -r requirements.txt
+# Install BazBeans
+pip install bazbeans
 
 # Run example
 python simple_agent.py

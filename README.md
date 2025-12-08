@@ -42,9 +42,8 @@ Get a working cluster in under 5 minutes:
 # 1. Start Redis
 redis-server
 
-# 2. Install BazBeans CLI
-git clone https://github.com/yourorg/bazbeans.git
-cd bazbeans/setup && ./install.sh
+# 2. Install BazBeans
+pip install bazbeans
 
 # 3. Run a test agent
 python -c "

@@ -26,7 +26,7 @@ with open(os.path.join(here, 'requirements.txt'), encoding='utf-8') as f:
 
 setup(
     name='bazbeans',
-    version='0.1.3',
+    version='0.1.4',
     description='Generic Multi-Node Control Plane Toolkit',
     long_description=long_description,
     long_description_content_type='text/markdown',

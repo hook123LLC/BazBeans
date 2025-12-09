@@ -8,6 +8,13 @@ A reusable toolkit for orchestrating distributed applications across multiple no
 from setuptools import setup, find_packages
 import os
 
+# Import custom commands
+try:
+    from setup_cli_command import get_cmdclass
+    CMDCLASS = get_cmdclass()
+except ImportError:
+    CMDCLASS = {}
+
 # Read the contents of README file
 here = os.path.abspath(os.path.dirname(__file__))
 with open(os.path.join(here, 'README.md'), encoding='utf-8') as f:
@@ -19,17 +26,17 @@ with open(os.path.join(here, 'requirements.txt'), encoding='utf-8') as f:
 
 setup(
     name='bazbeans',
-    version='1.0.0',
+    version='0.1.2',
     description='Generic Multi-Node Control Plane Toolkit',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    author='BazBeans Team',
-    author_email='team@bazbeans.dev',
-    url='https://github.com/bazbeans/bazbeans',
+    author='hook123 LLC',
+    author_email='hello@hook123.com',
+    url='https://github.com/hook123LLC/bazbeans',
     project_urls={
         'Documentation': 'https://bazbeans.readthedocs.io/',
-        'Source': 'https://github.com/bazbeans/bazbeans',
-        'Tracker': 'https://github.com/bazbeans/bazbeans/issues',
+        'Source': 'https://github.com/hook123LLC/bazbeans',
+        'Tracker': 'https://github.com/hook123LLC/bazbeans/issues',
     },
     packages=find_packages(where='src'),
     package_dir={'': 'src'},
@@ -45,6 +52,7 @@ setup(
         ],
         'docker': ['docker>=6.0.0'],
     },
+    cmdclass=CMDCLASS,
     entry_points={
         'console_scripts': [
             'bazbeans-cli=src.control_cli:cli',

@@ -6,6 +6,10 @@
 
 BazBeans is a **generic control plane toolkit** that helps you manage distributed applications across multiple servers. Think of it as the "operating system" for your cluster - it handles the hard parts of distributed coordination so you can focus on your application.
 
+> **BETA** : This project is new. Use at your own risk. We're developing the framework and it's early days.  We're using it for our own project(s), but would not recommend using in production without testing and a fallback plan.  I mean... we are using it, but don't necessarily do as we do.  Or try it, you may love it.   :-)
+
+> **macOS** : The proejct
+
 ### 🚀 Key Capabilities
 
 - **🏥 Self-Healing Nodes** - Nodes monitor their own health and automatically remove themselves from the load balancer when unhealthy
@@ -13,6 +17,7 @@ BazBeans is a **generic control plane toolkit** that helps you manage distribute
 - **⚡ Auto Load Balancing** - Automatic Nginx upstream updates via Redis pub/sub
 - **🔌 Pluggable Architecture** - Add custom health checks, commands, and IP resolution strategies
 - **🔄 Zero Project Coupling** - Generic design works with any application stack
+- **🚀 One-Click CLI Installation** - Auto-installs OS-specific CLI when you `pip install bazbeans`
 
 ## 🛤️ Choose Your Path (30 seconds)
 
@@ -44,6 +49,9 @@ redis-server
 
 # 2. Install BazBeans
 pip install bazbeans
+
+# The CLI is automatically installed for your OS!
+# You can start using 'bazbeans' commands immediately
 
 # 3. Run a test agent
 python -c "
@@ -355,7 +363,8 @@ config.allowed_exec_prefixes = ["docker", "systemctl", "ls"]
 
 ### Getting Started
 - **[Quick Start Guide](QUICK-START.md)** - 5-minute setup
-- **[CLI Setup Guide](SETUP-CLI.md)** - Install management tools
+- **[Auto-Installation Guide](AUTO-INSTALLATION.md)** - CLI auto-install details
+- **[CLI Setup Guide](SETUP-CLI.md)** - Manual CLI installation
 - **[Agent Deployment Guide](AGENT-DEPLOYMENT.md)** - Production deployment
 
 ### Advanced Topics
@@ -406,6 +415,46 @@ We welcome contributions! See our [Contributing Guide](CONTRIBUTING.md) for deta
 ## 📄 License
 
 This toolkit is designed to be generic and reusable across projects. Please adapt and extend as needed for your specific use case.
+
+---
+
+## 🎉 Release Notes
+
+### v0.1.1 - Auto-Installation Feature
+
+**🚀 New: One-Click CLI Installation**
+
+- **Automatic CLI Installation**: When you run `pip install bazbeans`, the OS-specific CLI is now automatically installed
+- **Cross-Platform Support**: Works seamlessly on Linux, macOS, and Windows
+- **Smart OS Detection**: Automatically chooses the right installer for your platform
+- **Error Handling**: Graceful fallbacks if installation fails - Python package still works
+- **Skip Options**: Multiple ways to skip auto-installation if needed
+
+**🛠️ Improvements**
+
+- Enhanced setup experience with automatic PATH configuration
+- Clear installation progress messages
+- Comprehensive troubleshooting documentation
+- Manual installation options still available
+
+**📚 Documentation**
+
+- New [Auto-Installation Guide](AUTO-INSTALLATION.md) with detailed information
+- Updated [CLI Setup Guide](SETUP-CLI.md) with auto-installation notes
+- Improved README with auto-installation highlights
+
+**🔧 Technical Details**
+
+- Custom setuptools commands for integration
+- Post-installation hooks for seamless installation
+- Environment variable controls for customization
+- Non-blocking installation that doesn't affect Python package functionality
+
+### What's Next
+
+- Enhanced cross-platform compatibility testing
+- Additional CLI command improvements
+- More integration examples and patterns
 
 ---
 

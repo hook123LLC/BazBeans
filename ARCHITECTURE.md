@@ -673,9 +673,9 @@ def sanitize_node_id(value: str) -> str:
 config = BazBeansConfig()
 
 # Map your project's env vars to BazBeans config
-config.redis_url = os.environ.get("Q_RESULT_BACKEND", config.redis_url)
+config.redis_url = os.environ.get("REDIS_BACKEND", config.redis_url)
 config.node_id = sanitize_node_id(
-    os.environ.get("TRADEWIN_INTERNET_MAILHOST", config.node_id)
+    os.environ.get("INTERNET_DNS_HOST", config.node_id)
 )
 config.data_center = os.environ.get("DATA_CENTER", "default")
 config.app_dir = os.environ.get("APP_DIR", "/opt/myapp")

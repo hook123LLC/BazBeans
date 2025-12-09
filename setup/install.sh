@@ -1,6 +1,6 @@
 #!/bin/bash
-# BazBeans Installer for Ubuntu/Linux
-# This script installs the 'bazbeans' command system-wide
+# BazBeans Smart Installer for Ubuntu/Linux
+# This script detects the installation method and adapts accordingly
 
 set -e
 
@@ -49,11 +49,29 @@ else
     SUDO_PREFIX=""
 fi
 
+# Detect installation method
+print_info "Detecting installation method..."
+INSTALL_MODE="unknown"
+
+# Check if bazbeans is already installed via package manager (pip/pipx/conda)
+if command -v pipx &> /dev/null && pipx list 2>/dev/null | grep -q "bazbeans"; then
+    print_info "BazBeans detected in pipx"
+    INSTALL_MODE="package_manager"
+elif python3 -c "import bazbeans" 2>/dev/null || python3 -c "import src.control_cli" 2>/dev/null; then
+    print_info "BazBeans Python package detected (installed via pip/conda)"
+    INSTALL_MODE="package_manager"
+elif [ -d "$BAZBEANS_HOME" ] || [ -d "/opt/bazbeans" ]; then
+    print_info "Existing standalone installation detected"
+    INSTALL_MODE="standalone"
+else
+    print_info "No existing installation found - will perform standalone installation"
+    INSTALL_MODE="fresh"
+fi
+
 # Create directories
 print_info "Creating directories..."
 mkdir -p "$BIN_DIR"
 mkdir -p "$CONFIG_DIR"
-mkdir -p "$BAZBEANS_HOME"
 
 # Get the directory where this script is located
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -65,11 +83,72 @@ if [ ! -d "$BAZBEANS_SOURCE" ]; then
     exit 1
 fi
 
-# Install bazbeans command
-print_info "Installing bazbeans command..."
-cat > "$BIN_DIR/bazbeans" << 'EOF'
+# Function to create CLI wrapper for package manager installations
+create_package_manager_wrapper() {
+    print_info "Creating CLI wrapper for package manager installation..."
+    
+    cat > "$BIN_DIR/bazbeans" << 'EOF'
 #!/bin/bash
-# BazBeans CLI Wrapper
+# BazBeans CLI Wrapper for Package Manager Installation
+
+# Find configuration file
+CONFIG_LOCATIONS=(
+    "$BAZBEANS_CONFIG"
+    "$HOME/.bazbeans/config.yaml"
+    "/etc/bazbeans/config.yaml"
+    "./bazbeans.yaml"
+)
+
+CONFIG_FILE=""
+for loc in "${CONFIG_LOCATIONS[@]}"; do
+    if [ -f "$loc" ]; then
+        CONFIG_FILE="$loc"
+        break
+    fi
+done
+
+# Extract redis_url from config if available
+REDIS_URL=""
+if [ -n "$CONFIG_FILE" ]; then
+    REDIS_URL=$(grep -E '^redis_url:' "$CONFIG_FILE" | cut -d: -f2- | tr -d ' "')
+fi
+
+# Use environment variable if set, then config, then default
+if [ -z "$REDIS_URL" ]; then
+    REDIS_URL="${BAZBEANS_REDIS_URL:-redis://localhost:6379/0}"
+fi
+
+# Try to run via Python module (works with pip/pipx/conda installations)
+# First try pipx (which handles its own virtual environment)
+if command -v pipx &> /dev/null; then
+    if pipx list 2>/dev/null | grep -q "bazbeans"; then
+        exec pipx run --spec bazbeans python -c "from src.control_cli import cli; cli()" --redis-url "$REDIS_URL" "$@"
+    fi
+fi
+
+# Try direct Python import (for pip/conda installations)
+if python3 -c "import src.control_cli" 2>/dev/null; then
+    exec python3 -c "from src.control_cli import cli; cli()" --redis-url "$REDIS_URL" "$@"
+elif python3 -c "import bazbeans.control_cli" 2>/dev/null; then
+    exec python3 -c "from bazbeans.control_cli import cli; cli()" --redis-url "$REDIS_URL" "$@"
+else
+    echo "Error: BazBeans Python package not found"
+    echo "Please ensure BazBeans is installed via pip, pipx, or conda"
+    exit 1
+fi
+EOF
+
+    chmod +x "$BIN_DIR/bazbeans"
+    print_info "CLI wrapper created successfully"
+}
+
+# Function to create CLI wrapper for standalone installations
+create_standalone_wrapper() {
+    print_info "Creating CLI wrapper for standalone installation..."
+    
+    cat > "$BIN_DIR/bazbeans" << 'EOF'
+#!/bin/bash
+# BazBeans CLI Wrapper for Standalone Installation
 
 # Find configuration file
 CONFIG_LOCATIONS=(
@@ -104,30 +183,71 @@ if [ ! -d "$BAZBEANS_HOME" ]; then
     BAZBEANS_HOME="/opt/bazbeans"
 fi
 
-# Run the CLI
-if [ -f "$BAZBEANS_HOME/bazbeans/control_cli.py" ]; then
-    python3 "$BAZBEANS_HOME/bazbeans/control_cli.py" --redis-url "$REDIS_URL" "$@"
+# Run the CLI from standalone installation
+if [ -f "$BAZBEANS_HOME/src/control_cli.py" ]; then
+    exec python3 -c "import sys, os; sys.path.insert(0, os.path.normpath(r'$BAZBEANS_HOME')); from src.control_cli import cli; cli()" --redis-url "$REDIS_URL" "$@"
 else
     echo "Error: BazBeans not found at $BAZBEANS_HOME"
-    echo "Please run: bazbeans install"
+    echo "Please reinstall BazBeans"
     exit 1
 fi
 EOF
 
-# Make executable
-chmod +x "$BIN_DIR/bazbeans"
+    chmod +x "$BIN_DIR/bazbeans"
+    print_info "CLI wrapper created successfully"
+}
 
-# Copy bazbeans source
-print_info "Installing BazBeans files..."
-$SUDO_PREFIX cp -r "$BAZBEANS_SOURCE" "$BAZBEANS_HOME"
-
-# Install Python dependencies
-print_info "Installing Python dependencies..."
-if command -v pip3 &> /dev/null; then
-    pip3 install -r "$BAZBEANS_HOME/requirements.txt"
-else
-    print_warn "pip3 not found, please install Python dependencies manually"
-fi
+# Handle installation based on detected mode
+case $INSTALL_MODE in
+    "package_manager")
+        print_info "Installing CLI wrapper for package manager installation..."
+        create_package_manager_wrapper
+        
+        # Check if entry points were created
+        if command -v bazbeans-cli &> /dev/null; then
+            print_info "Entry point 'bazbeans-cli' detected - you can also use that command"
+        fi
+        ;;
+        
+    "standalone"|"fresh")
+        print_info "Performing standalone installation..."
+        
+        # Create installation directory
+        mkdir -p "$BAZBEANS_HOME"
+        
+        # Copy bazbeans source
+        print_info "Installing BazBeans files to $BAZBEANS_HOME..."
+        cd "$BAZBEANS_SOURCE"
+        shopt -s dotglob
+        for item in *; do
+            if [ "$item" != ".git" ]; then
+                $SUDO_PREFIX cp -r "$item" "$BAZBEANS_HOME"
+            fi
+        done
+        shopt -u dotglob
+        
+        # Install Python dependencies only for fresh installations
+        if [ "$INSTALL_MODE" = "fresh" ]; then
+            print_info "Installing Python dependencies..."
+            if command -v pip3 &> /dev/null; then
+                pip3 install --user -r "$BAZBEANS_HOME/requirements.txt" || print_warn "Some dependencies may have failed to install"
+            else
+                print_warn "pip3 not found, please install Python dependencies manually:"
+                print_warn "  pip3 install --user -r $BAZBEANS_HOME/requirements.txt"
+            fi
+        else
+            print_info "Skipping dependency installation (updating existing installation)"
+        fi
+        
+        # Create standalone wrapper
+        create_standalone_wrapper
+        ;;
+        
+    *)
+        print_error "Could not determine installation method"
+        exit 1
+        ;;
+esac
 
 # Install configuration file
 if [ ! -f "$CONFIG_DIR/config.yaml" ]; then
@@ -181,6 +301,7 @@ if [[ \$REPLY =~ ^[Yy]\$ ]]; then
     $SUDO_PREFIX rm -rf "$CONFIG_DIR"
     
     echo "BazBeans uninstalled successfully."
+    echo "Note: If installed via pip/pipx, also run: pip uninstall bazbeans"
 else
     echo "Uninstall cancelled."
 fi
@@ -199,7 +320,12 @@ if command -v bazbeans &> /dev/null; then
     echo "  bazbeans --help"
     echo
     echo "Configuration: $CONFIG_DIR/config.yaml"
-    echo "Installation: $BAZBEANS_HOME"
+    
+    if [ "$INSTALL_MODE" = "package_manager" ]; then
+        echo "Installation: Python package (via pip/pipx/conda)"
+    else
+        echo "Installation: $BAZBEANS_HOME"
+    fi
     
     if [ "$SYSTEM_WIDE" = false ]; then
         echo

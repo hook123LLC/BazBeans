@@ -4,6 +4,20 @@
 
 This guide covers installing and setting up the BazBeans CLI tool for administrative control of your BazBeans cluster.
 
+## 🚀 Auto-Installation (Recommended)
+
+When you install BazBeans from PyPI using `pip install bazbeans`, the CLI is **automatically installed** for your operating system. No manual steps required!
+
+- ✅ **Linux**: Automatically installs `bazbeans` command
+- ✅ **macOS**: Automatically installs `bazbeans` command  
+- ✅ **Windows**: Automatically installs `bazbeans.bat` and `bazbeans.ps1`
+
+For detailed information about auto-installation, see the [Auto-Installation Guide](AUTO-INSTALLATION.md).
+
+## 🛠️ Manual Installation
+
+If you need to install the CLI manually or want to understand the process, continue with this guide.
+
 ## 🎯 What You'll Accomplish
 
 After completing this guide, you will have:
@@ -31,9 +45,36 @@ After completing this guide, you will have:
 ```bash
 # Install BazBeans package
 pip install bazbeans
+
+# 🎉 The CLI is automatically installed for your operating system!
+# You can now use 'bazbeans' commands immediately
 ```
 
-### Step 2: Install CLI Tool
+### Step 2: Verify Installation (Optional)
+
+> **Note:** With the new auto-installation feature, the CLI is automatically installed when you run `pip install bazbeans`. You can skip to Step 3 to verify.
+
+If you want to install the CLI manually or need to re-install it:
+
+#### 🐧 Ubuntu/Linux
+```bash
+cd setup
+./install.sh
+```
+
+#### 🪟 Windows (PowerShell)
+```powershell
+cd setup
+.\install.ps1
+```
+
+#### 🍎 macOS
+```bash
+cd setup
+./install-macos.sh
+```
+
+### Step 3: Verify Installation
 
 Choose your platform:
 

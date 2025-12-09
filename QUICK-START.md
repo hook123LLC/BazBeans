@@ -58,7 +58,12 @@ redis-cli ping
 ```bash
 # Install BazBeans package
 pip install bazbeans
+
+# 🎉 The CLI is automatically installed for your OS!
+# You can now use 'bazbeans' commands immediately
 ```
+
+> **New Feature:** BazBeans now automatically installs the CLI for your operating system when you run `pip install bazbeans`. No manual setup required!
 
 ## 🤖 Step 3: Run Your First Agent (1 minute)
 
@@ -139,12 +144,16 @@ redis-server
 
 ### "bazbeans command not found"
 ```bash
-# Reinstall the CLI
-cd bazbeans/setup
-./install.sh
+# With auto-installation, this should work automatically after pip install
+# If not, try reinstalling:
+pip install bazbeans
 
 # Or use Python directly
 python -m bazbeans.control_cli --help
+
+# For manual CLI installation (if needed)
+cd setup
+./install.sh
 ```
 
 ### "Node not appearing in list"

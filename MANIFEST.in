@@ -13,6 +13,11 @@ include setup/**/*.sh
 include setup/**/*.ps1
 include setup/**/*.yaml
 
+# Include auto-installer scripts
+include setup_cli_installer.py
+include setup_cli_command.py
+include post_install.py
+
 # Include package data
 recursive-include src *.py
 
@@ -20,3 +25,7 @@ recursive-include src *.py
 exclude .gitignore
 exclude .flake8
 exclude setup.py
+
+# Exclude internal documentation
+exclude internal.md
+exclude test_installation.md

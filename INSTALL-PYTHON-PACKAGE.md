@@ -5,22 +5,54 @@ This guide explains how to install BazBeans as a Python package.
 ## Requirements
 
 - Python 3.8 or higher
-- pip (Python package installer)
+- pip or pipx (Python package installer)
 - Redis server (for cluster coordination)
 
 ## Installation Methods
 
-### 1. Install from Source (Development)
+### 1. Install with pipx (Recommended for Development)
+
+[pipx](https://pypa.github.io/pipx/) provides isolated environments and is ideal for development:
+
+```bash
+# Install pipx if you don't have it
+python3 -m pip install --user pipx
+python3 -m pipx ensurepath
+
+# Clone and install BazBeans
+git clone https://github.com/bazbeans/bazbeans.git
+cd bazbeans
+pipx install --editable .
+
+# Install the CLI wrapper
+cd setup
+./install.sh  # Linux/macOS
+# or
+.\install.ps1  # Windows
+```
+
+**Why pipx?**
+- Isolated virtual environment (no dependency conflicts)
+- Easy to uninstall
+- Works perfectly with the smart CLI installer
+
+### 2. Install from Source with pip (Development)
 
 Clone the repository and install in development mode:
 
 ```bash
 git clone https://github.com/bazbeans/bazbeans.git
 cd bazbeans
-pip install -e .
+pip install --user -e .
+
+# Install the CLI wrapper
+cd setup
+./install.sh  # Linux/macOS
+# or
+.\install.ps1  # Windows
 ```
 
-### 2. Install with Optional Dependencies
+### 3. Install with Optional Dependencies
 
 Install with Docker support:
 
@@ -40,7 +72,7 @@ Install with all optional dependencies:
 pip install -e .[docker,dev]
 ```
 
-### 3. Install from PyPI (when published)
+### 4. Install from PyPI (when published)
 
 ```bash
 pip install bazbeans
@@ -58,7 +90,24 @@ This will verify that all components can be imported and basic functionality wor
 
 ## Command-Line Tools
 
-After installation, the following commands will be available:
+### Smart CLI Installation
+
+BazBeans uses a **smart installer** that automatically detects your installation method:
+
+- **Package Manager Installation** (pip/pipx/conda): Creates a lightweight wrapper that uses your package manager's environment
+- **Standalone Installation**: Copies files and installs dependencies independently
+
+After running the installer, the `bazbeans` command will be available:
+
+```bash
+bazbeans --help
+bazbeans list-nodes
+bazbeans freeze <node-id>
+```
+
+### Entry Points
+
+The following entry points are also available (if your package manager created them):
 
 - `bazbeans-cli` - Administrative command-line interface
 - `bazbeans-agent` - Node agent (for running on cluster nodes)
@@ -95,13 +144,16 @@ agent.run()  # This will run indefinitely
 
 ```bash
 # List all nodes
-bazbeans-cli list-nodes
+bazbeans list-nodes
 
 # Freeze a node
-bazbeans-cli freeze node-1 --reason "Maintenance"
+bazbeans freeze node-1 --reason "Maintenance"
 
 # Send command to all nodes
-bazbeans-cli update --dc us-west-1
+bazbeans update --dc us-west-1
+
+# Get help
+bazbeans --help
 ```
 
 ### Nginx Updater
@@ -117,11 +169,29 @@ updater.run()  # Listens for pub/sub events
 
 ## Troubleshooting
 
+### CLI Not Found
+
+If the `bazbeans` command is not found after installation:
+
+```bash
+# For Linux/macOS
+export PATH="$PATH:$HOME/.local/bin"
+
+# For Windows
+# Restart your terminal
+```
+
+See [Installation Troubleshooting Guide](INSTALL-TROUBLESHOOTING.md) for detailed solutions.
+
 ### Import Errors
 
 If you get import errors, make sure the package is properly installed:
 
 ```bash
+# For pipx
+pipx list | grep bazbeans
+
+# For pip
 pip list | grep bazbeans
 python -c "import src; print('Success')"
 ```
@@ -134,13 +204,22 @@ Make sure Redis is running and accessible:
 redis-cli ping
 ```
 
-### Permission Issues
+### Module Not Found with pipx
 
-On Linux/macOS, you might need to use `sudo` for certain operations:
+If you see `ModuleNotFoundError` after pipx installation, reinstall the CLI wrapper:
 
 ```bash
-sudo bazbeans-updater  # For nginx configuration updates
+cd bazbeans/setup
+./install.sh  # Linux/macOS
+# or
+.\install.ps1  # Windows
 ```
+
+The smart installer will detect your pipx installation and create the appropriate wrapper.
+
+For more troubleshooting help, see:
+- [Installation Troubleshooting Guide](INSTALL-TROUBLESHOOTING.md)
+- [General Troubleshooting](TROUBLESHOOTING.md)
 
 ## Development
 

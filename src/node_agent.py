@@ -15,7 +15,11 @@ import time
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, Any, List, Callable, Optional
-import docker
+
+try:
+    import docker
+except ImportError:
+    docker = None
 
 from .config import BazBeansConfig
 from .node_pool import NodePool
@@ -59,10 +63,14 @@ class NodeAgent:
         self.command_handlers: Dict[str, Callable] = {}
         
         # Docker client for container checks
-        try:
-            self.docker_client = docker.from_env()
-        except Exception as e:
-            logger.warning(f"Docker not available: {e}")
+        if docker:
+            try:
+                self.docker_client = docker.from_env()
+            except Exception as e:
+                logger.warning(f"Docker not available: {e}")
+                self.docker_client = None
+        else:
+            logger.warning("Docker module not available - container checks disabled")
             self.docker_client = None
         
         # Register built-in command handlers

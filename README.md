@@ -8,7 +8,7 @@ BazBeans is a **generic control plane toolkit** that helps you manage distribute
 
 > **BETA** : This project is new. Use at your own risk. We're developing the framework and it's early days.  We're using it for our own project(s), but would not recommend using in production without testing and a fallback plan.  I mean... we are using it, but don't necessarily do as we do.  Or try it, you may love it.   :-)
 
-> **macOS** : The proejct
+> **macOS** : The project includes macOS support, but has not been tested.
 
 ### 🚀 Key Capabilities
 

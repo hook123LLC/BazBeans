@@ -28,7 +28,7 @@ except ImportError as e:
     if 'redis' in str(e) or 'click' in str(e) or 'psutil' in str(e) or 'tabulate' in str(e):
         raise
 
-__version__ = "0.1.2"
+__version__ = "0.1.3"
 __all__ = [
     "BazBeansConfig",
     "NodePool",

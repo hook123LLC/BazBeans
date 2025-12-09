@@ -22,6 +22,7 @@ def get_version():
     try:
         # Try to read from pyproject.toml in the project root
         pyproject_path = Path(__file__).parent.parent / "pyproject.toml"
+    
         if pyproject_path.exists():
             with open(pyproject_path, 'r') as f:
                 data = toml.load(f)
@@ -30,7 +31,7 @@ def get_version():
         pass
     
     # Fallback to a default version if we can't read the file
-    return '0.1.2'
+    return '0.1.x'
 
 
 def display_header():
@@ -163,6 +164,7 @@ class ClusterController:
 @click.pass_context
 def cli(ctx, redis_url, data_center):
     """BazBeans Cluster Control CLI"""
+
     # Display header with version
     display_header()
     

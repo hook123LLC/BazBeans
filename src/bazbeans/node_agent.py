@@ -251,7 +251,10 @@ class NodeAgent:
             try:
                 result = handler(command)
                 self.pool.update_status(f"executed_{cmd_type}", json.dumps(result))
-                logger.info(f"Command {cmd_type} completed: {result.get('success', True)}")
+                success = result.get('success', True)
+                logger.info(f"Command {cmd_type} completed: {success}")
+                if not success:
+                    logger.debug(result)
             except Exception as e:
                 logger.error(f"Command {cmd_type} failed: {e}")
                 self.pool.update_status(f"error_{cmd_type}", str(e))
@@ -312,8 +315,10 @@ class NodeAgent:
             return {"error": f"Command not allowed. Allowed prefixes: {self.config.allowed_exec_prefixes}"}
         
         try:
+            print(f"[DEBUG] : self.config.app_dir {self.config.app_dir}")
             result = subprocess.run(
                 cmd,
+                cwd=self.config.app_dir,
                 shell=True,
                 capture_output=True,
                 text=True,
